@@ -47,7 +47,7 @@ pipeline {
         }
         failure{
             echo "========pipeline execution failed========"
-            slackSend channel: 'devops', message: ' job startedfailed'
+            slackSend channel: 'devops', message: ' job failed'
         }
     }
 }

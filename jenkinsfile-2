@@ -4,12 +4,6 @@ pipeline{
         stage("A"){
             steps{
                 echo "========executing A========"
-                sh '''rsync -avh /var/lib/jenkins/workspace/ pipeline-code-demo/Dockerfile root@192.168.184.153:/opt
-'''
-            }
-            stage("A"){
-            steps{
-                echo "========executing A========"
             }
             post{
                 always{

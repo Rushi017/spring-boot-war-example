@@ -3,7 +3,9 @@ pipeline{
     stages{
         stage("A"){
             steps{
-                git 'https://github.com/NavnathChaudhari/cloud.git'
+                echo "========executing A========"
+                sh '''rsync -avh /var/lib/jenkins/workspace/ pipeline-code-demo/Dockerfile root@192.168.184.153:/opt
+'''
             }
             stage("A"){
             steps{

@@ -1,56 +1,69 @@
-pipeline { 
+pipeline{
     agent any
     triggers {
         pollSCM 'H/2 * * * *'
+		}
+    tools{
+        maven 'maven'
     }
-    tools {
-        maven 'Maven'
-    } 
-       
     stages{
-        stage("Test"){
+        stage('checkout the code'){
             steps{
-                slackSend channel: 'devops', message: ' job started'
-            // mvn test
-                sh "mvn test"
-                echo "========executing A========"
+                slackSend channel: 'hello-world', message: 'job started'
+                git url:'https://github.com/NavnathChaudhari/spring-boot-war-example.git', branch: 'master'
             }
         }
-        stage("Build"){
+        stage('build the code'){
             steps{
-                sh "mvn package"
-                echo "========executing A========"
+                sh 'mvn clean package'
             }
         }
-        stage("Deploy on test"){
+        stage("sonar quality check"){
             steps{
-                // deploy on test server
-                deploy adapters: [tomcat7(credentialsId: 'c8fbadfd-7b6b-4012-84e3-297b1915e4fd', path: '', url: 'http://192.168.184.153:8080/')], contextPath: '/app', war: '**/*.war'
-                echo "========executing A========"
+                script{
+                    withSonarQubeEnv(credentialsId: 'jenkins-sonar-token') {
+                            sh "mvn sonar:sonar -f /var/lib/jenkins/workspace/hello-world-cicd/pom.xml"
+                    }
+                } 
+            }
+            }
+        stage('create docker image'){
+            steps{
+                sh '''docker image build -t $JOB_NAME:v1.$BUILD_ID .
+docker image tag $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:v1.$BUILD_ID
+docker image tag $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:latest'''
+            }
+
+        }
+        stage('push the image into docker hub'){
+            steps{
+                withCredentials([string(credentialsId: 'Docker pass', variable: 'docker_pass')]) {
+                    sh "docker login -u nava9594 -p ${docker_pass}"
+
+}
+                    sh '''docker image push nava9594/$JOB_NAME:v1.$BUILD_ID
+docker image push nava9594/$JOB_NAME:latest 
+docker image rmi $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:latest'''
+
             }
         }
-        stage("Deploy on prod"){
-            input{
-                message "Should we continue?"
-                ok "Yes we should"
-            }
+        stage('Deploy application on k8s'){
             steps{
-                deploy adapters: [tomcat9(credentialsId: 'c8fbadfd-7b6b-4012-84e3-297b1915e4fd', path: '', url: 'http://192.168.184.152:8080/')], contextPath: '/app', war: '**/*.war'
-                echo "========executing A========"
-            }
+                sh 'kubectl apply -f deployment.yaml'
+        }
         }
     }
-    post{
+        post{
         always{
             echo "========always========"
         }
         success{
             echo "========pipeline executed successfully ========"
-            slackSend channel: 'devops', message: ' job success'
+            slackSend channel: 'hello-world', message: ' job success'
         }
         failure{
             echo "========pipeline execution failed========"
-            slackSend channel: 'devops', message: ' job failed'
+            slackSend channel: 'hello-world', message: ' job failed'
+        }
         }
     }
-}

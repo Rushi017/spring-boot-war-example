@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: nava9594/mongo-project
+        image: nava9594/hello-world-cicd
         ports:
         - containerPort: 8080
 

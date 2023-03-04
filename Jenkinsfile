@@ -21,7 +21,7 @@ pipeline{
         stage("sonar quality check"){
             steps{
                 script{
-                    withSonarQubeEnv(credentialsId: 'Sonar-user') {
+                    withSonarQubeEnv(credentialsId: '17') {
                             sh "mvn sonar:sonar -f /var/lib/jenkins/workspace/hello-world-cicd/pom.xml"
                     }
                     timeout(time: 1, unit: 'HOURS') {

@@ -21,7 +21,7 @@ pipeline{
         stage("sonar quality check"){
             steps{
                 script{
-                    withSonarQubeEnv(credentialsId: '17') {
+                    withSonarQubeEnv(credentialsId: 'Sonar-user') {
                             sh "mvn sonar:sonar -f /var/lib/jenkins/workspace/hello-world-cicd/pom.xml"
                     }
                     timeout(time: 1, unit: 'HOURS') {
@@ -41,10 +41,13 @@ docker image tag $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
             }
 
         }
-        withCredentials([string(credentialsId: '17', variable: ''), usernamePassword(credentialsId: 'rdeshapnde', passwordVariable: 'docker_pass', usernameVariable: '')]) {
-    		sh "docker login -u rdeshapnde17 -p ${docker_pass}"
+        stage('push the image into docker hub'){
+            steps{
+                withCredentials([string(credentialsId: 'Docker pass', variable: 'docker_pass')]) {
+                    sh "docker login -u rdeshpande17 -p ${docker_pass}"
+
 }
-                    sh '''docker image push rdeshpande17/$JOB_NAME:v1.$BUILD_ID
+                    sh '''docker image push nava9594/$JOB_NAME:v1.$BUILD_ID
 docker image push rdeshpande17/$JOB_NAME:latest 
 docker image rmi $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
 
@@ -69,4 +72,4 @@ docker image rmi $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID rdes
             slackSend channel: 'jenkins-notification', message: ' job failed'
         }
         }
-    
+    }

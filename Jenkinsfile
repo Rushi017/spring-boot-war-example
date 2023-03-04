@@ -36,8 +36,8 @@ pipeline{
         stage('create docker image'){
             steps{
                 sh '''docker image build -t $JOB_NAME:v1.$BUILD_ID .
-docker image tag $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:v1.$BUILD_ID
-docker image tag $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:latest'''
+docker image tag $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID
+docker image tag $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
             }
 
         }
@@ -47,9 +47,9 @@ docker image tag $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:latest'''
                     sh "docker login -u nava9594 -p ${docker_pass}"
 
 }
-                    sh '''docker image push nava9594/$JOB_NAME:v1.$BUILD_ID
+                    sh '''docker image push rdeshpande17/$JOB_NAME:v1.$BUILD_ID
 docker image push nava9594/$JOB_NAME:latest 
-docker image rmi $JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:latest'''
+docker image rmi $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID nava9594/$JOB_NAME:latest'''
 
             }
         }

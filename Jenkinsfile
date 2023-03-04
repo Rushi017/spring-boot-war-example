@@ -43,8 +43,8 @@ docker image tag $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
         }
         stage('push the image into docker hub'){
             steps{
-                withCredentials([string(credentialsId: 'Docker pass', variable: 'docker_pass')])  {
-                    sh "docker login -u rdeshpande17 --password-stdin ${docker_pass}"
+                withCredentials([string(credentialsId: 'rdeshpande', variable: 'docker_pass')]) {
+                    sh "docker login -u rdeshpande17 -p ${docker_pass}"
 
 }
                     sh '''docker image push rdeshpande17/$JOB_NAME:v1.$BUILD_ID
@@ -65,11 +65,11 @@ docker image rmi $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID rdes
         }
         success{
             echo "========pipeline executed successfully ========"
-            slackSend channel: 'jenkins-notification', message: ' job success'
+            slackSend channel: 'hello-world', message: ' job success'
         }
         failure{
             echo "========pipeline execution failed========"
-            slackSend channel: 'jenkins-notification', message: ' job failed'
+            slackSend channel: 'hello-world', message: ' job failed'
         }
         }
     }

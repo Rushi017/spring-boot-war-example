@@ -69,4 +69,4 @@ docker image rmi $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID rdes
             slackSend channel: 'jenkins-notification', message: ' job failed'
         }
         }
-    }
+    

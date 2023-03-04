@@ -44,7 +44,7 @@ docker image tag $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
         stage('push the image into docker hub'){
             steps{
                 withCredentials([string(credentialsId: 'rdeshapnde', variable: 'docker_pass')]) {
-                    sh "docker login -u rdeshpande17 -p ${docker_pass}"
+                    sh "docker login -u rdeshpande17 --password-stdin ${docker_pass}"
 
 }
                     sh '''docker image push rdeshpande17/$JOB_NAME:v1.$BUILD_ID

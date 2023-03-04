@@ -48,7 +48,7 @@ docker image tag $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
 
 }
                     sh '''docker image push rdeshpande17/$JOB_NAME:v1.$BUILD_ID
-docker image push nava9594/$JOB_NAME:latest 
+docker image push rdeshpande17/$JOB_NAME:latest 
 docker image rmi $JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:v1.$BUILD_ID rdeshpande17/$JOB_NAME:latest'''
 
             }
